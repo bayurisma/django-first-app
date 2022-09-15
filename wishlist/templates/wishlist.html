@@ -8,13 +8,11 @@
     <th>Harga Barang</th>
     <th>Deskripsi</th>
   </tr>
-  {% comment %} Tambahkan data di bawah baris ini {% endcomment %} 
-  
-  {% for barang in list_barang %}
+  {% comment %} Tambahkan data di bawah baris ini {% endcomment %} {% for barang in list_barang %}
   <tr>
-    <th>{{barang.nama_barang}}</th>
-    <th>{{barang.harga_barang}}</th>
-    <th>{{barang.deskripsi}}</th>
+    <td>{{barang.nama_barang}}</td>
+    <td>{{barang.harga_barang}}</td>
+    <td>{{barang.deskripsi}}</td>
   </tr>
   {% endfor %}
 </table>
