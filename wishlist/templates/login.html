@@ -2,8 +2,8 @@
 <title>Login</title>
 {% endblock meta %} {% block content %}
 
-<div class="login">
-  <h1>Login</h1>
+<div class="position-absolute top-50 start-50 translate-middle">
+  <h1 style="text-align: center">Login</h1>
 
   <form method="POST" action="">
     {% csrf_token %}
@@ -20,7 +20,7 @@
 
       <tr>
         <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
+        <td><input class="btn btn-primary" type="submit" value="Login" /></td>
       </tr>
     </table>
   </form>
