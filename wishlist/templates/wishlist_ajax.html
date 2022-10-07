@@ -1,0 +1,103 @@
+{% extends 'base.html' %} {% block content %}
+
+<script>
+  $(document).ready(function () {
+    $.get("{% url 'wishlist:return_json' %}", function (data) {
+      $.each(data, function (index, value) {
+        $('#wishlist tbody').append('<tr><th>' + value.pk + '</th><td>' + value.fields.nama_barang + '</td><td>' + value.fields.harga_barang + '</td><td>' + value.fields.deskripsi + '</td></tr>');
+      });
+    });
+  });
+
+  $('#wishlist-form').submit(function (e) {
+    // preventing from page reload and default actions
+    e.preventDefault();
+    var nama_barang = $('#InputNama').val();
+    var harga_barang = parseInt($('#InputHarga').val());
+    var deskripsi = $('#InputDeskripsi').val();
+
+    // make POST ajax call
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'wishlist:ajaxForm' %}",
+      data: {
+        nama_barang: nama_barang,
+        harga_barang: harga_barang,
+        deskripsi: deskripsi,
+      },
+      success: function (response) {
+        // on successfull creating object
+        // 1. clear the form.
+        $('#wishlist-form').trigger('reset');
+
+        // display the newly friend to table.
+        var instance = JSON.parse(response['instance']);
+        var pk = instance[0]['pk'];
+        $('#wishlist tbody').append('<tr><th>' + pk + '</th><td>' + nama_barang + '</td><td>' + harga_barang + '</td><td>' + deskripsi + '</td></tr>');
+      },
+      error: function (response) {
+        // alert the error if any error occured
+        alert(response['responseJSON']['error']);
+      },
+    });
+  });
+</script>
+
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-lg bg-light" style="padding-left: 0; display: flex; justify-content: space-between">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Nama: {{nama}}</a>
+    </div>
+    <button class="btn btn-danger" type="submit"><a href="{% url 'wishlist:logout' %}" style="text-decoration: none; color: white">Logout</a></button>
+  </nav>
+</div>
+
+<table class="table" id="wishlist">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nama Barang</th>
+      <th scope="col">Harga Barang</th>
+      <th scope="col">Deskripsi</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div class="container-md min-vh-100 d-flex item-align-center gap-5">
+  <form id="wishlist-form" method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="InputBarang" class="form-label">Nama Barang</label>
+      <input type="text" class="form-control" id="InputNama" />
+    </div>
+    <div class="mb-3">
+      <label for="InputHarga" class="form-label">Harga Barang</label>
+      <input type="number" class="form-control" id="InputHarga" />
+    </div>
+    <div class="mb-3">
+      <label for="InputDeskripsi" class="form-label">Deskripsi</label>
+      <input type="text" class="form-control" id="InputDeskripsi" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<!-- <div class="container-fluid">
+  <form id="wishlist-form">
+      <div class="row-3">
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="form-group col-2">
+              <label class="col-12">{{ field.label }}</label>
+              {{ field }}
+          </div>
+          {% endfor %}
+          <input type="submit" class="btn btn-primary" value="Add Wishlist" />
+      </div>
+  <form>
+</div> -->
+
+<h5 style="text-align: center">Sesi terakhir login: {{ last_login }}</h5>
+
+{% endblock content %}

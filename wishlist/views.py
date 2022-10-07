@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 import datetime
+from .forms import WishlistForm
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -74,3 +76,25 @@ def logout_user(req):
     res = HttpResponseRedirect(reverse('wishlist:login'))
     res.delete_cookie('last_login')
     return res
+
+@login_required(login_url='/wishlist/login/')
+def getData(req):     
+    context = {
+        'nama': 'Bayu Risma',
+        'last_login': req.COOKIES['last_login'],
+    }
+    return render(req, 'wishlist_ajax.html', context)
+
+@login_required(login_url="/wishlist/login/")
+def ajaxForm(req):
+    if req.method == "POST":
+        nama_barang = req.POST.get("nama_barang")
+        harga_barang = req.POST.get("harga_barang")
+        deskripsi = req.POST.get("deskripsi")
+        newItem = BarangWishlist(
+            nama_barang=nama_barang, harga_barang=harga_barang, deskripsi=deskripsi
+        )
+        newItem.save()
+        JsonResponse({}, status=200)
+    
+    return redirect("wishlist:getData")
